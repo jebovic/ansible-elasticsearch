@@ -1,0 +1,42 @@
+env:
+  - distro: debianjessie
+    init: "/sbin/init"
+    run_opts: ""
+    playbook: test.yml
+  - distro: ubuntutrusty
+    init: "/sbin/init"
+    run_opts: ""
+    playbook: test.yml
+  - distro: ubuntuxenial
+    init: "/sbin/init"
+    run_opts: ""
+    playbook: test.yml
+
+services:
+  - docker
+
+before_install:
+  - docker pull jebovic/${distro}-ansible:latest
+
+script:
+  # run container
+  - container_id=$(mktemp)
+  - docker run --detach --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} jebovic/${distro}-ansible:latest "${init}" > "${container_id}"
+  # syntax checking
+  - docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/${playbook} --syntax-check
+  # test role
+  - docker exec "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/${playbook}
+  # test role idempotence
+  - idempotence=$(mktemp)
+  - docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/${playbook} | tee -a ${idempotence}
+  - >
+    tail ${idempotence}
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
+  # test role tasks
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  slack:
+    secure: sGJMN5ricSuayzdCwF+a8V6eCws0Mn1NkxaZrrQje34jCNkqToTRxn9twZrilfL5emog2SBClc4jA7WvdEW1znWK0ypAgoN+sP1iI85mWQlVq/dAnCyQC1181rBpTaTfOiiYuo9tbeQwDJXbV8UcduvMCxpJFmbdYuRNKLYjI3ZxO1zA+Bqx+fzUwctb/vFQjFjJMxM564ORyQ28EP2SOh3jdkg5Za1bmH/GxNyuFTjWO/yYuzaAiQj1/GiLeCn9NfzwB7kEaWogB9xDFAVVP9Y23bsOH3SfUE0RMy3QyKi8L43NLBZyZPI28Re/YFcARpp45o7WlQLZ37nCRU6ZjbHK6yBx/iGvMwwpwMjjFvJGdctpCrGdvdcCLKkrY7ryaOq/tqTmwuGzZTFM98TIReCNdYM0PweFBGbdFD7dfmqsXjI/9fgIbAR9pIwJAD9rojzh8bE8muk2+EOxqerVhvdp8wadNfajXDgb5FuUa0EcFWzoxbhKemkPu28HYdQ+ox8snMRAb+ZLQloGNFm/UfYe4H6TbVg0P9hO1B2mJS2vEUdxP1KDnQQkC4qCfjssobRyLgJEVbGl/zX9Au4/C8eqX3qjqEmaPJbz0WthEz3jC1qm5ULEbQAMk8iDGkzkf2BH1kFCZwo4tcQQRp27zH2hDkF4pr7zkOd2YDLcbCc=

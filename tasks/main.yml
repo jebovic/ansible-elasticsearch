@@ -1,0 +1,50 @@
+---
+
+- name: install key
+  apt_key:
+    url: "{{ elasticsearch_apt_key_url }}"
+    state: present
+
+- name: add repos
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ elasticsearch_apt_repositories }}"
+
+- name: install apt packages
+  apt:
+    name:  "{{ item }}"
+    state:              latest
+    install_recommends: false
+    update_cache:       yes
+    cache_valid_time:   300
+  with_items: "{{ elasticsearch_packages }}"
+
+- name: config
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/elasticsearch/{{ item }}"
+  with_items:
+    - elasticsearch.yml
+    - logging.yml
+  notify:
+    - restart elasticsearch
+
+- name: daemon config
+  template:
+    src: elasticsearch.j2
+    dest: /etc/default/elasticsearch
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart elasticsearch
+
+- name: service start
+  service:
+    name:  "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - "{{ elasticsearch_daemon }}"
