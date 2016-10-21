@@ -20,16 +20,32 @@ elasticsearch_log_dir: "/var/log/elasticsearch"
 elasticsearch_work_dir: "/tmp/elasticsearch"
 elasticsearch_http_host: 0.0.0.0
 elasticsearch_http_port: 9201
+elasticsearch_tcp_port: 9301
 elasticsearch_logger_level: INFO
 elasticsearch_config: {
   node.name: "node1",
   cluster.name: "elasticcluster",
-  discovery.zen.ping.unicast.hosts: "localhost:9301",
+  discovery.zen.ping.unicast.hosts: "localhost:{{ elasticsearch_tcp_port }}",
   http.port: "{{ elasticsearch_http_port }}",
   network.host: "{{ elasticsearch_http_host }}",
-  transport.tcp.port: 9301,
-  node.data: false,
+  transport.tcp.port: "{{ elasticsearch_tcp_port }}",
+  node.data: true,
   node.master: true,
   bootstrap.mlockall: true,
   discovery.zen.ping.multicast.enabled: false
 }
+
+# Kibana configuration
+kibana_enabled: yes
+kibana_apt_key_url: "https://packages.elastic.co/GPG-KEY-elasticsearch"
+kibana_apt_repositories:
+  - "deb http://packages.elastic.co/kibana/{{ kibana_major_version }}/debian stable main"
+kibana_packages:
+  - kibana
+kibana_daemon: kibana
+
+# elasticsearch basic configuration
+kibana_major_version: "4.6"
+kibana_http_host: 0.0.0.0
+kibana_http_port: 5601
+kibana_es_http_host: localhost

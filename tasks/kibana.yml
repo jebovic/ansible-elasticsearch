@@ -1,0 +1,39 @@
+---
+
+- name: kibana > install key
+  apt_key:
+    url: "{{ kibana_apt_key_url }}"
+    state: present
+
+- name: kibana > add repos
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ kibana_apt_repositories }}"
+
+- name: kibana > install apt packages
+  apt:
+    name:  "{{ item }}"
+    state:              latest
+    install_recommends: false
+    update_cache:       yes
+    cache_valid_time:   300
+  with_items: "{{ kibana_packages }}"
+
+- name: kibana > config
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/kibana/config/{{ item }}"
+  with_items:
+    - kibana.yml
+  notify:
+    - restart kibana
+
+- name: service start
+  service:
+    name:  "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - "{{ kibana_daemon }}"

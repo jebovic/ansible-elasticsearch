@@ -54,3 +54,6 @@
     port: "{{ elasticsearch_http_port }}"
     delay: 3
     timeout: 300
+
+- include: kibana.yml
+  when: kibana_enabled

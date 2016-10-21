@@ -21,7 +21,7 @@ before_install:
 script:
   # run container
   - container_id=$(mktemp)
-  - docker run --detach --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro -p 9201:9201 --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} jebovic/${distro}-ansible:latest "${init}" > "${container_id}"
+  - docker run --detach --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro -p 5601:5601 -p 9201:9201 --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} jebovic/${distro}-ansible:latest "${init}" > "${container_id}"
   # Install dependencies.
   - docker exec "$(cat ${container_id})" ansible-galaxy install -r /etc/ansible/roles/role_under_test/tests/requirements.yml
   # syntax checking
@@ -38,6 +38,7 @@ script:
     || (echo 'Idempotence test: fail' && exit 1)
   # test role tasks
   - curl http://localhost:9201
+  - curl http://localhost:5601
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
