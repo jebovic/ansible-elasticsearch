@@ -18,15 +18,15 @@ elasticsearch_pid_dir: "/var/run/elasticsearch"
 elasticsearch_data_dir: "/var/lib/elasticsearch"
 elasticsearch_log_dir: "/var/log/elasticsearch"
 elasticsearch_work_dir: "/tmp/elasticsearch"
-elasticsearch_api_host: "localhost"
-elasticsearch_api_port: 9200
+elasticsearch_http_host: 0.0.0.0
+elasticsearch_http_port: 9201
 elasticsearch_logger_level: INFO
 elasticsearch_config: {
   node.name: "node1",
   cluster.name: "elasticcluster",
   discovery.zen.ping.unicast.hosts: "localhost:9301",
-  http.port: 9201,
-  network.host: 0.0.0.0,
+  http.port: "{{ elasticsearch_http_port }}",
+  network.host: "{{ elasticsearch_http_host }}",
   transport.tcp.port: 9301,
   node.data: false,
   node.master: true,

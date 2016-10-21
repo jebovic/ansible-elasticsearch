@@ -48,3 +48,9 @@
     enabled: yes
   with_items:
     - "{{ elasticsearch_daemon }}"
+
+- name: wait for service start
+  wait_for:
+    port: "{{ elasticsearch_http_port }}"
+    delay: 3
+    timeout: 300
