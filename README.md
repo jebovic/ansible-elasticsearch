@@ -5,6 +5,11 @@ Elasticsearch
 
 Install and configure elasticsearch
 
+Dependencies
+------------
+
+This role depends on [jebovic.java](https://github.com/jebovic/ansible-java) role to be fully functional
+
 Role Variables
 --------------
 
@@ -50,6 +55,7 @@ Example Playbook
 ```
     - hosts: servers
       roles:
+         - { role: jebovic.java }
          - { role: jebovic.elasticsearch }
 ```
 

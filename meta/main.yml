@@ -17,4 +17,5 @@ galaxy_info:
     - elasticsearch
     - java
     - searchengine
-dependencies: []
+dependencies:
+  - jebovic.java
