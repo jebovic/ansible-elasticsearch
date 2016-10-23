@@ -13,7 +13,7 @@ This role depends on [jebovic.java](https://github.com/jebovic/ansible-java) rol
 Role Variables
 --------------
 
-```
+```yaml
 # elasticsearch install configuration
 elasticsearch_apt_key_url: "http://packages.elasticsearch.org/GPG-KEY-elasticsearch"
 elasticsearch_apt_repositories:
@@ -52,12 +52,19 @@ elasticsearch_config: {
 Example Playbook
 ----------------
 
+```yaml
+- hosts: servers
+  roles:
+     - { role: jebovic.java }
+     - { role: jebovic.elasticsearch }
 ```
-    - hosts: servers
-      roles:
-         - { role: jebovic.java }
-         - { role: jebovic.elasticsearch }
-```
+
+Tags
+----
+
+* elasticsearch_config : only update config and restart elasitcsearch service
+* kibana : only install and start kibana service
+* kibana_config : only update config and restart kibana service
 
 License
 -------

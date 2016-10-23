@@ -30,6 +30,7 @@
     - logging.yml
   notify:
     - restart elasticsearch
+  tags: elasticsearch_config
 
 - name: daemon config
   template:
@@ -40,6 +41,7 @@
     mode: 0644
   notify:
     - restart elasticsearch
+  tags: elasticsearch_config
 
 - name: service start
   service:
@@ -57,3 +59,4 @@
 
 - include: kibana.yml
   when: kibana_enabled
+  tags: kibana

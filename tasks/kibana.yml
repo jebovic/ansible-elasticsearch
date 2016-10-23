@@ -29,6 +29,7 @@
     - kibana.yml
   notify:
     - restart kibana
+  tags: kibana_config
 
 - name: service start
   service:
