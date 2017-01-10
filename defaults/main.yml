@@ -1,6 +1,9 @@
 ---
 
 # elasticsearch install configuration
+elasticsearch_dep_packages:
+  - apt-transport-https
+  - ca-certificates
 elasticsearch_apt_key_url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
 elasticsearch_apt_repositories:
   - "deb https://artifacts.elastic.co/packages/{{ elasticsearch_major_version }}/apt stable main"
