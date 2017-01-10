@@ -6,6 +6,6 @@
     - role_under_test
   vars:
     java_apt_repositories:
-      - ppa:openjdk-r/ppa
+      - "{% if (ansible_distribution == 'Ubuntu') %}ppa:openjdk-r/ppa{% else %}deb http://http.debian.net/debian jessie-backports main{% endif %}"
     java_packages:
       - openjdk-8-jre
