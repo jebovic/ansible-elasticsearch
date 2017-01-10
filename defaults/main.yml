@@ -1,16 +1,20 @@
 ---
 
 # elasticsearch install configuration
-elasticsearch_apt_key_url: "http://packages.elasticsearch.org/GPG-KEY-elasticsearch"
+elasticsearch_apt_key_url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
 elasticsearch_apt_repositories:
-  - "deb http://packages.elastic.co/elasticsearch/{{ elasticsearch_major_version }}/debian stable main"
+  - "deb https://artifacts.elastic.co/packages/{{ elasticsearch_major_version }}/apt stable main"
 elasticsearch_packages:
   - elasticsearch
 elasticsearch_daemon: elasticsearch
 
+# elasticsearch JVM options
+elasticsearch_jvm_xms: 512m
+elasticsearch_jvm_xmx: 512m
+
 # elasticsearch basic configuration
-elasticsearch_major_version: "2.x"
-elasticsearch_version: "2.3.4"
+elasticsearch_major_version: "5.x"
+elasticsearch_version: "5.1.1"
 elasticsearch_user: elasticsearch
 elasticsearch_group: elasticsearch
 elasticsearch_conf_dir: "/etc/elasticsearch"
@@ -25,27 +29,28 @@ elasticsearch_logger_level: INFO
 elasticsearch_config: {
   node.name: "node1",
   cluster.name: "elasticcluster",
-  discovery.zen.ping.unicast.hosts: "localhost:{{ elasticsearch_tcp_port }}",
+  #discovery.zen.ping.unicast.hosts: "localhost:{{ elasticsearch_tcp_port }}",
+  #discovery.zen.ping.multicast.enabled: false,
+  discovery.zen.minimum_master_nodes: 1,
   http.port: "{{ elasticsearch_http_port }}",
   network.host: "{{ elasticsearch_http_host }}",
   transport.tcp.port: "{{ elasticsearch_tcp_port }}",
   node.data: true,
   node.master: true,
-  bootstrap.mlockall: true,
-  discovery.zen.ping.multicast.enabled: false
+  bootstrap.memory_lock: false
 }
 
 # Kibana configuration
 kibana_enabled: yes
-kibana_apt_key_url: "https://packages.elastic.co/GPG-KEY-elasticsearch"
+kibana_apt_key_url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
 kibana_apt_repositories:
-  - "deb http://packages.elastic.co/kibana/{{ kibana_major_version }}/debian stable main"
+  - "deb https://artifacts.elastic.co/packages/{{ kibana_major_version }}/apt stable main"
 kibana_packages:
   - kibana
 kibana_daemon: kibana
 
 # elasticsearch basic configuration
-kibana_major_version: "4.6"
+kibana_major_version: "5.x"
 kibana_http_host: 0.0.0.0
 kibana_http_port: 5601
 kibana_es_http_host: localhost

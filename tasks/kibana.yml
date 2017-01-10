@@ -24,7 +24,7 @@
 - name: kibana > config
   template:
     src: "{{ item }}.j2"
-    dest: "/opt/kibana/config/{{ item }}"
+    dest: "/etc/kibana/{{ item }}"
   with_items:
     - kibana.yml
   notify:

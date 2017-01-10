@@ -26,6 +26,7 @@
     src: "{{ item }}.j2"
     dest: "/etc/elasticsearch/{{ item }}"
   with_items:
+    - jvm.options
     - elasticsearch.yml
     - logging.yml
   notify:
@@ -55,7 +56,7 @@
   wait_for:
     port: "{{ elasticsearch_http_port }}"
     delay: 3
-    timeout: 300
+    timeout: 45
 
 - include: kibana.yml
   when: kibana_enabled

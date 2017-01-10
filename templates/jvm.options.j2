@@ -1,0 +1,13 @@
+-Xms{{ elasticsearch_jvm_xms }}
+-Xmx{{ elasticsearch_jvm_xmx }}
+-XX:+UseConcMarkSweepGC
+-XX:CMSInitiatingOccupancyFraction=75
+-XX:+UseCMSInitiatingOccupancyOnly
+-XX:+DisableExplicitGC
+-XX:+AlwaysPreTouch
+-server
+-Djava.awt.headless=true
+-Dfile.encoding=UTF-8
+-Djna.nosys=true
+-Dio.netty.noUnsafe=true
+-XX:+HeapDumpOnOutOfMemoryError
