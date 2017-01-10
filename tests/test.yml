@@ -2,5 +2,10 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - jebovic.java
+    - java
     - role_under_test
+  vars:
+    java_apt_repositories:
+      - deb http://http.debian.net/debian jessie-backports main
+    java_packages:
+      - openjdk-8-jre
