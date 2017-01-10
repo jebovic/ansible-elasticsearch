@@ -6,6 +6,6 @@
     - role_under_test
   vars:
     java_apt_repositories:
-      - deb http://http.debian.net/debian jessie-backports main
+      - ppa:openjdk-r/ppa
     java_packages:
       - openjdk-8-jre
