@@ -4,7 +4,7 @@
   apt:
     name: "{{ item }}"
     state:              latest
-    install_recommends: false
+    install_recommends: no
     update_cache:       yes
     cache_valid_time:   300
   with_items: "{{ elasticsearch_dep_packages }}"
@@ -13,22 +13,31 @@
   apt_key:
     url: "{{ elasticsearch_apt_key_url }}"
     state: present
+  register: elasticsearch_key_installed
 
 - name: add repos
   apt_repository:
     repo: "{{ item }}"
     state: present
-    update_cache: yes
+    update_cache: no
+  when: elasticsearch_key_installed|success
+  register: elasticsearch_repo_installed
   with_items: "{{ elasticsearch_apt_repositories }}"
+
+- name: update apt cache
+  apt:
+    update_cache:       yes
+  when: elasticsearch_repo_installed|changed
 
 - name: install apt packages
   apt:
     name:  "{{ item }}"
     state:              latest
-    install_recommends: false
+    install_recommends: no
     update_cache:       yes
-    cache_valid_time:   300
+    cache_valid_time:   86400
   with_items: "{{ elasticsearch_packages }}"
+  when: elasticsearch_repo_installed|success
 
 - name: config
   template:

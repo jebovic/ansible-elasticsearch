@@ -4,22 +4,31 @@
   apt_key:
     url: "{{ kibana_apt_key_url }}"
     state: present
+  register: kibana_key_installed
 
 - name: kibana > add repos
   apt_repository:
     repo: "{{ item }}"
     state: present
-    update_cache: yes
+    update_cache: no
+  when: kibana_key_installed|success
+  register: kibana_repo_installed
   with_items: "{{ kibana_apt_repositories }}"
+
+- name: update apt cache
+  apt:
+    update_cache:       yes
+  when: kibana_repo_installed|changed
 
 - name: kibana > install apt packages
   apt:
     name:  "{{ item }}"
     state:              latest
-    install_recommends: false
+    install_recommends: no
     update_cache:       yes
-    cache_valid_time:   300
+    cache_valid_time:   86400
   with_items: "{{ kibana_packages }}"
+  when: kibana_repo_installed|success
 
 - name: kibana > config
   template:

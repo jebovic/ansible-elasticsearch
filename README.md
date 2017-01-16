@@ -7,6 +7,15 @@ Install and configure elasticsearch
 
 This role is a part of my [OPS project](https://github.com/jebovic/ops), follow this link to see it in action. OPS provides a lot of stuff, like a vagrant file for development VMs, playbooks for roles orchestration, inventory files, examples for roles configuration, ansible configuration file, and many more.
 
+Compatibility
+-------------
+
+Tested and approved on :
+
+* Debian jessie (8+)
+* Ubuntu Trusty (14.04 LTS)
+* Ubuntu Xenial (16.04 LTS)
+
 Dependencies
 ------------
 
@@ -83,6 +92,22 @@ Example Playbook
   roles:
      - { role: jebovic.java }
      - { role: jebovic.elasticsearch }
+```
+
+Example : config
+----------------
+
+```yaml
+# Java configuration for elastic stack 5.x (java 8 needed)
+java_apt_repositories:
+  - "{% if (ansible_distribution == 'Ubuntu') %}ppa:openjdk-r/ppa{% else %}deb http://http.debian.net/debian jessie-backports main{% endif %}"
+java_packages:
+  - openjdk-8-jre
+
+# Start elasticsearch with max memory upper than 512Mo and different data dir
+elasticsearch_jvm_xms: 1g
+elasticsearch_jvm_xmx: 1g
+elasticsearch_data_dir: /srv/data
 ```
 
 Tags
