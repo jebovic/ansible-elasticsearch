@@ -2,10 +2,10 @@
 
 - name: restart elasticsearch
   service:
-    name:  "{{ elasticsearch_daemon }}"
+    name: "{{ elasticsearch_daemon }}"
     state: restarted
 
 - name: restart kibana
   service:
-    name:  "{{ kibana_daemon }}"
+    name: "{{ kibana_daemon }}"
     state: restarted
