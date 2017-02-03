@@ -7,5 +7,6 @@
   vars:
     java_apt_repositories:
       - "{% if (ansible_distribution == 'Ubuntu') %}ppa:openjdk-r/ppa{% else %}deb http://http.debian.net/debian jessie-backports main{% endif %}"
+    java_apt_default_repo: "{% if (ansible_distribution == 'Debian') %}jessie-backports{% endif %}"
     java_packages:
       - openjdk-8-jre
